@@ -59,3 +59,13 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+*.sdf
+*.tlog
+*.pdb
+*.bi
+*.Cache
+*.lastbuildstate
+*.suo
+*.metagen
+Release/opencv_winforms.log
+Release/opencv_winforms.MyForm.resources

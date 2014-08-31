@@ -127,7 +127,7 @@ int cv_setup(void)
 	int i;
 
 #ifdef WIN32
-	capture.open("D:\\src\\opencv_test_dll\\Release\\file.h264");
+	capture.open("D:\\src\\win32_opencv_test_dll\\Release\\file.h264");
 #else
 	capture.open(0);
 	capture.set(CV_CAP_PROP_FRAME_WIDTH,320);
