@@ -69,3 +69,10 @@ $RECYCLE.BIN/
 *.metagen
 Release/opencv_winforms.log
 Release/opencv_winforms.MyForm.resources
+*.opensdf
+*.ilk
+Debug/opencv_winforms.log
+Debug/opencv_winforms.MyForm.resources
+*.log
+Debug/opencv_winforms.settings_dialog.resources
+Release/opencv_winforms.settings_dialog.resources

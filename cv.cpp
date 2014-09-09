@@ -127,7 +127,8 @@ int cv_setup(void)
 	int i;
 
 #ifdef WIN32
-	capture.open("D:\\src\\win32_opencv_test_dll\\Release\\file.h264");
+	//capture.open("D:\\src\\win32_opencv_test_dll\\Release\\file.h264");
+	capture.open("C:\\cygwin\\home\\Chris\\7.h264");
 #else
 	capture.open(0);
 	capture.set(CV_CAP_PROP_FRAME_WIDTH,320);
@@ -166,6 +167,8 @@ int cv_loop(void)
 
 	T( capture.read(img[0]) ); //printf("img[0]: isContinuous()=%d channels()=%d  type()=%d  depth()=%d\n", img[0].isContinuous(), img[0].channels(), img[0].type(), img[0].depth()); //type=16
 
+	if(img[0].cols>320) resize(img[0], img[0], Size(320,240), 0.0, 0.0, INTER_AREA );
+
 	T( cvtColor (img[0], img[1], COLOR_BGR2GRAY) );
 	T( cvtColor (img[0], img[5], COLOR_BGR2HSV) );
 	T( cvtColor (img[0], img[3], COLOR_BGR2BGR565) ); //printf("img[3]: channels()=%d  type()=%d  depth()=%d  size=%d  step=%d\n", img[3].channels(), img[3].type(), img[3].depth(), img[3].size, img[3].step1()  ); //type=8
@@ -200,6 +203,7 @@ int cv_loop(void)
 	T( Canny     (img[7], img[6], 50, 50, 3, 0) );
 	T( Laplacian (img[1], img[9], 0) );
 
+#if 0
 	vector<Vec3f> circles;
 	T( HoughCircles (img[1], circles, CV_HOUGH_GRADIENT, 2, img[1].rows/4, 200, 100) );
     for( size_t i = 0; i < circles.size(); i++ )
@@ -222,7 +226,7 @@ int cv_loop(void)
         Point pt2(cvRound(x0 - 1000*(-b)),  cvRound(y0 - 1000*(a)));
         line( img[3], pt1, pt2, Scalar(0,0,255), 3, 8 );
     }
-
+#endif
 
 	T( inRange(img[5],Scalar(1,20,20),Scalar(128,255,255),img[9]) );
 

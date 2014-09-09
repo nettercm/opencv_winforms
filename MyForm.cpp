@@ -1,5 +1,5 @@
 #include "MyForm.h"
-
+#include "settings_dialog.h"
 // robot_ui.cpp : main project file.
 
 #include <stdio.h>

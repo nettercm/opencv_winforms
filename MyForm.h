@@ -11,6 +11,8 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+#include "settings_dialog.h"
+
 using namespace std;
 using namespace cv;
 
@@ -38,6 +40,8 @@ namespace opencv_winforms {
 		MyForm(void)
 		{
 			InitializeComponent();
+			//settings = (gcnew settings_dialog());
+			//settings->Show();
 			//
 			//TODO: Add the constructor code here
 			//
@@ -56,7 +60,8 @@ namespace opencv_winforms {
 				delete components;
 			}
 		}
-//	private: void show_image(Mat image, System::Windows::Forms::PictureBox^ pictureBox);
+		//	private: void show_image(Mat image, System::Windows::Forms::PictureBox^ pictureBox);
+	private: settings_dialog^ settings;
 	private: int fps;
 	private: System::Windows::Forms::Timer^  timer1;
 	private: System::Windows::Forms::TableLayoutPanel^  tableLayoutPanel1;
@@ -73,6 +78,7 @@ namespace opencv_winforms {
 	private: System::Windows::Forms::Label^  label2;
 	private: System::Windows::Forms::PictureBox^  pictureBox5;
 	private: System::Windows::Forms::PictureBox^  pictureBox6;
+	private: System::Windows::Forms::Button^  button1;
 
 
 
@@ -118,6 +124,7 @@ namespace opencv_winforms {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
 			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->tableLayoutPanel1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox2))->BeginInit();
@@ -167,12 +174,12 @@ namespace opencv_winforms {
 			this->pictureBox1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->pictureBox1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->pictureBox1->Location = System::Drawing::Point(4, 4);
 			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(332, 246);
+			this->pictureBox1->Size = System::Drawing::Size(333, 246);
 			this->pictureBox1->TabIndex = 0;
 			this->pictureBox1->TabStop = false;
+			this->pictureBox1->DoubleClick += gcnew System::EventHandler(this, &MyForm::pictureBox1_DoubleClick);
 			this->pictureBox1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::pictureBox1_MouseMove);
 			// 
 			// pictureBox2
@@ -180,9 +187,9 @@ namespace opencv_winforms {
 			this->pictureBox2->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->pictureBox2->Location = System::Drawing::Point(343, 4);
+			this->pictureBox2->Location = System::Drawing::Point(344, 4);
 			this->pictureBox2->Name = L"pictureBox2";
-			this->pictureBox2->Size = System::Drawing::Size(332, 246);
+			this->pictureBox2->Size = System::Drawing::Size(333, 246);
 			this->pictureBox2->TabIndex = 1;
 			this->pictureBox2->TabStop = false;
 			// 
@@ -191,9 +198,9 @@ namespace opencv_winforms {
 			this->pictureBox3->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->pictureBox3->Location = System::Drawing::Point(682, 4);
+			this->pictureBox3->Location = System::Drawing::Point(684, 4);
 			this->pictureBox3->Name = L"pictureBox3";
-			this->pictureBox3->Size = System::Drawing::Size(335, 246);
+			this->pictureBox3->Size = System::Drawing::Size(333, 246);
 			this->pictureBox3->TabIndex = 2;
 			this->pictureBox3->TabStop = false;
 			// 
@@ -204,7 +211,7 @@ namespace opencv_winforms {
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->pictureBox4->Location = System::Drawing::Point(4, 257);
 			this->pictureBox4->Name = L"pictureBox4";
-			this->pictureBox4->Size = System::Drawing::Size(332, 246);
+			this->pictureBox4->Size = System::Drawing::Size(333, 246);
 			this->pictureBox4->TabIndex = 3;
 			this->pictureBox4->TabStop = false;
 			// 
@@ -213,9 +220,9 @@ namespace opencv_winforms {
 			this->pictureBox5->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->pictureBox5->Location = System::Drawing::Point(343, 257);
+			this->pictureBox5->Location = System::Drawing::Point(344, 257);
 			this->pictureBox5->Name = L"pictureBox5";
-			this->pictureBox5->Size = System::Drawing::Size(332, 246);
+			this->pictureBox5->Size = System::Drawing::Size(333, 246);
 			this->pictureBox5->TabIndex = 4;
 			this->pictureBox5->TabStop = false;
 			// 
@@ -224,9 +231,9 @@ namespace opencv_winforms {
 			this->pictureBox6->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->pictureBox6->Location = System::Drawing::Point(682, 257);
+			this->pictureBox6->Location = System::Drawing::Point(684, 257);
 			this->pictureBox6->Name = L"pictureBox6";
-			this->pictureBox6->Size = System::Drawing::Size(335, 246);
+			this->pictureBox6->Size = System::Drawing::Size(333, 246);
 			this->pictureBox6->TabIndex = 5;
 			this->pictureBox6->TabStop = false;
 			// 
@@ -265,15 +272,14 @@ namespace opencv_winforms {
 			this->comboBox1->Name = L"comboBox1";
 			this->comboBox1->Size = System::Drawing::Size(49, 21);
 			this->comboBox1->TabIndex = 3;
-			this->comboBox1->Text = L"1000";
+			this->comboBox1->Text = L"20";
 			this->comboBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::comboBox1_SelectedIndexChanged);
 			this->comboBox1->TextChanged += gcnew System::EventHandler(this, &MyForm::comboBox1_SelectedIndexChanged);
 			// 
 			// label1
 			// 
-			this->label1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(498, 11);
+			this->label1->Location = System::Drawing::Point(114, 11);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(56, 13);
 			this->label1->TabIndex = 2;
@@ -294,19 +300,29 @@ namespace opencv_winforms {
 			// 
 			// label2
 			// 
-			this->label2->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(645, 13);
+			this->label2->Location = System::Drawing::Point(263, 11);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(31, 13);
 			this->label2->TabIndex = 2;
 			this->label2->Text = L"Skip:";
+			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(391, 6);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(75, 23);
+			this->button1->TabIndex = 4;
+			this->button1->Text = L"Settings";
+			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1026, 573);
+			this->Controls->Add(this->button1);
 			this->Controls->Add(this->comboBox2);
 			this->Controls->Add(this->comboBox1);
 			this->Controls->Add(this->label2);
@@ -361,6 +377,7 @@ namespace opencv_winforms {
 			 }
 
 	private: 
+
 		System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) 
 		{
 		}
@@ -393,5 +410,15 @@ namespace opencv_winforms {
 		{
 			timer1->Interval = System::Convert::ToInt32(comboBox1->Text);
 		}
-};
+
+		System::Void pictureBox1_DoubleClick(System::Object^  sender, System::EventArgs^  e) 
+		{
+		}
+
+		System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) 
+		{
+			settings = (gcnew settings_dialog());
+			settings->Show();
+		}
+	};
 }
