@@ -40,8 +40,11 @@ Mat img_from_camera;
 extern int cv_setup(void);
 extern int cv_loop(void);
 extern int cv_capture(void);
+extern int cv_capture_from_stream(void);
 extern Mat img[40];
 extern Mat img_temp;
+extern Mat img_stream;
+extern volatile int stream_frames;
 extern int skip,skipped;
 extern uchar h_min,h_max,s_min,s_max,v_min,v_max;
 extern double canny_t1,canny_t2;
@@ -60,8 +63,8 @@ void show_image(int h, int w, unsigned char *data)
     cvWaitKey(1);
 	*/
 	cv::Mat tmp(h,w,CV_8UC3,data);
-	tmp.copyTo(img[0]);
-
+	tmp.copyTo(img_stream);
+	stream_frames++;
 }
 
 
@@ -190,7 +193,7 @@ System::Void MyForm::timer1_Tick(System::Object^  sender, System::EventArgs^  e)
 			break;
 		}
 		if(checkBox_Pause->Checked) skip = -1; else skip = System::Convert::ToInt32(comboBox2->Text);
-		cv_capture();
+		cv_capture_from_stream();
 		cv_loop();
 		show_image(img[comboBox_img1->SelectedIndex],pictureBox1);
 		show_image(img[comboBox_img2->SelectedIndex],pictureBox2);
@@ -198,7 +201,6 @@ System::Void MyForm::timer1_Tick(System::Object^  sender, System::EventArgs^  e)
 		show_image(img[comboBox_img4->SelectedIndex],pictureBox4);
 		show_image(img[comboBox_img5->SelectedIndex],pictureBox5);
 		show_image(img[comboBox_img6->SelectedIndex],pictureBox6);
-		//show_image(img_from_camera,pictureBox1);
 		GC::Collect();
 	}
 }
@@ -309,7 +311,7 @@ System::Void MyForm::button1_Click(System::Object^  sender, System::EventArgs^  
 System::Void MyForm::backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e)
 {
 	printf("++backgroundWorker1_DoWork()\n");
-	//avio_reading_main(0,NULL);
+	avio_reading_main(0,NULL);
 	printf("--backgroundWorker1_DoWork()\n");
 }
 

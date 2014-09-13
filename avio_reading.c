@@ -139,7 +139,7 @@ int avio_reading_main(int argc, char *argv[])
 
 	//tcp_client_init("192.168.2.250",5001);
 	//tcp_client_close();
-	tcp_client_init("192.168.2.250",5001);
+	tcp_client_init("192.168.2.213",5001);
 	//tcp_client_init("127.0.0.1",5001);
 
 	/* register codecs and formats and other lavf/lavc components*/

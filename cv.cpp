@@ -8,6 +8,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+#include <Windows.h>
 /*
 ilmimf.lib;zlib.lib;libjasper.lib;libpng.lib;libtiff.lib;libjpeg.lib;opencv_photo249.lib;opencv_features2d249.lib;opencv_gpu249.lib;opencv_objdetect249.lib;opencv_video249.lib;opencv_videostab249.lib;opencv_legacy249.lib;opencv_flann249.lib;opencv_contrib249.lib;opencv_core249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;Comctl32.lib;Vfw32.lib;
 */
@@ -31,6 +32,8 @@ VideoCapture capture;
 Mat img[40];
 char *img_name[40];
 Mat img_temp;
+Mat img_stream;
+volatile int stream_frames=0;
 Mat img_previous1,img_previous2;
 double t;
 int skip=0, skipped=0;
@@ -228,6 +231,36 @@ int cv_capture(void)
 	{
 		skipped=0;  	while(skipped<skip)	{ capture.read(img[0]); skipped++;	} //skip if so desired
 		T( capture.read(img[0]) ); //printf("img[0]: isContinuous()=%d channels()=%d  type()=%d  depth()=%d\n", img[0].isContinuous(), img[0].channels(), img[0].type(), img[0].depth()); //type=16
+		img_previous1.copyTo(img_previous2);
+		img[0].copyTo(img_previous1);
+	}
+	resize(img[0], img[0], Size(FRAME_WIDTH,FRAME_HEIGHT), 0.0, 0.0, INTER_AREA );
+	if(img[0].cols != img_previous2.cols) img[0].copyTo(img_previous2);
+	if(img[0].cols != img_previous1.cols) img[0].copyTo(img_previous1);
+
+	return 0;
+}
+
+
+int cv_capture_from_stream(void)
+{
+	static int last_stream_frames=0;
+	if(skip<0)
+	{
+		img_previous1.copyTo(img[0]);
+	}
+	else
+	{
+		skipped=0;  	
+		while(skipped<skip)	
+		{ 
+			while(last_stream_frames==stream_frames) Sleep(5);
+			skipped++;	
+			last_stream_frames=stream_frames;
+		} //skip if so desired
+		while(last_stream_frames==stream_frames) Sleep(2);
+		last_stream_frames=stream_frames;
+		img_stream.copyTo(img[0]);
 		img_previous1.copyTo(img_previous2);
 		img[0].copyTo(img_previous1);
 	}

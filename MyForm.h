@@ -148,6 +148,10 @@ namespace opencv_winforms {
 			this->pictureBox6 = (gcnew System::Windows::Forms::PictureBox());
 			this->comboBox_img1 = (gcnew System::Windows::Forms::ComboBox());
 			this->comboBox_img2 = (gcnew System::Windows::Forms::ComboBox());
+			this->comboBox_img3 = (gcnew System::Windows::Forms::ComboBox());
+			this->comboBox_img4 = (gcnew System::Windows::Forms::ComboBox());
+			this->comboBox_img5 = (gcnew System::Windows::Forms::ComboBox());
+			this->comboBox_img6 = (gcnew System::Windows::Forms::ComboBox());
 			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
 			this->lbl_fps = (gcnew System::Windows::Forms::Label());
 			this->timer2 = (gcnew System::Windows::Forms::Timer(this->components));
@@ -172,10 +176,6 @@ namespace opencv_winforms {
 			this->checkBox_Pause = (gcnew System::Windows::Forms::CheckBox());
 			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->comboBox_imgsize = (gcnew System::Windows::Forms::ComboBox());
-			this->comboBox_img3 = (gcnew System::Windows::Forms::ComboBox());
-			this->comboBox_img4 = (gcnew System::Windows::Forms::ComboBox());
-			this->comboBox_img5 = (gcnew System::Windows::Forms::ComboBox());
-			this->comboBox_img6 = (gcnew System::Windows::Forms::ComboBox());
 			this->tableLayoutPanel1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox2))->BeginInit();
@@ -330,6 +330,60 @@ namespace opencv_winforms {
 			this->comboBox_img2->Name = L"comboBox_img2";
 			this->comboBox_img2->Size = System::Drawing::Size(320, 21);
 			this->comboBox_img2->TabIndex = 7;
+			// 
+			// comboBox_img3
+			// 
+			this->comboBox_img3->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+				| System::Windows::Forms::AnchorStyles::Left) 
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->comboBox_img3->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->comboBox_img3->FormattingEnabled = true;
+			this->comboBox_img3->Location = System::Drawing::Point(658, 4);
+			this->comboBox_img3->Name = L"comboBox_img3";
+			this->comboBox_img3->Size = System::Drawing::Size(320, 21);
+			this->comboBox_img3->TabIndex = 7;
+			// 
+			// comboBox_img4
+			// 
+			this->comboBox_img4->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+				| System::Windows::Forms::AnchorStyles::Left) 
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->comboBox_img4->BackColor = System::Drawing::SystemColors::Window;
+			this->comboBox_img4->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->comboBox_img4->FormattingEnabled = true;
+			this->comboBox_img4->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"a", L"b", L"c"});
+			this->comboBox_img4->Location = System::Drawing::Point(4, 279);
+			this->comboBox_img4->Name = L"comboBox_img4";
+			this->comboBox_img4->Size = System::Drawing::Size(320, 21);
+			this->comboBox_img4->TabIndex = 6;
+			// 
+			// comboBox_img5
+			// 
+			this->comboBox_img5->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+				| System::Windows::Forms::AnchorStyles::Left) 
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->comboBox_img5->BackColor = System::Drawing::SystemColors::Window;
+			this->comboBox_img5->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->comboBox_img5->FormattingEnabled = true;
+			this->comboBox_img5->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"a", L"b", L"c"});
+			this->comboBox_img5->Location = System::Drawing::Point(331, 279);
+			this->comboBox_img5->Name = L"comboBox_img5";
+			this->comboBox_img5->Size = System::Drawing::Size(320, 21);
+			this->comboBox_img5->TabIndex = 6;
+			// 
+			// comboBox_img6
+			// 
+			this->comboBox_img6->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+				| System::Windows::Forms::AnchorStyles::Left) 
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->comboBox_img6->BackColor = System::Drawing::SystemColors::Window;
+			this->comboBox_img6->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->comboBox_img6->FormattingEnabled = true;
+			this->comboBox_img6->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"a", L"b", L"c"});
+			this->comboBox_img6->Location = System::Drawing::Point(658, 279);
+			this->comboBox_img6->Name = L"comboBox_img6";
+			this->comboBox_img6->Size = System::Drawing::Size(320, 21);
+			this->comboBox_img6->TabIndex = 6;
 			// 
 			// checkBox1
 			// 
@@ -536,60 +590,6 @@ namespace opencv_winforms {
 			this->comboBox_imgsize->Text = L"320x240";
 			this->comboBox_imgsize->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::comboBox1_SelectedIndexChanged);
 			this->comboBox_imgsize->TextChanged += gcnew System::EventHandler(this, &MyForm::comboBox1_SelectedIndexChanged);
-			// 
-			// comboBox_img3
-			// 
-			this->comboBox_img3->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
-				| System::Windows::Forms::AnchorStyles::Left) 
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->comboBox_img3->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
-			this->comboBox_img3->FormattingEnabled = true;
-			this->comboBox_img3->Location = System::Drawing::Point(658, 4);
-			this->comboBox_img3->Name = L"comboBox_img3";
-			this->comboBox_img3->Size = System::Drawing::Size(320, 21);
-			this->comboBox_img3->TabIndex = 7;
-			// 
-			// comboBox_img4
-			// 
-			this->comboBox_img4->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
-				| System::Windows::Forms::AnchorStyles::Left) 
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->comboBox_img4->BackColor = System::Drawing::SystemColors::Window;
-			this->comboBox_img4->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
-			this->comboBox_img4->FormattingEnabled = true;
-			this->comboBox_img4->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"a", L"b", L"c"});
-			this->comboBox_img4->Location = System::Drawing::Point(4, 279);
-			this->comboBox_img4->Name = L"comboBox_img4";
-			this->comboBox_img4->Size = System::Drawing::Size(320, 21);
-			this->comboBox_img4->TabIndex = 6;
-			// 
-			// comboBox_img5
-			// 
-			this->comboBox_img5->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
-				| System::Windows::Forms::AnchorStyles::Left) 
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->comboBox_img5->BackColor = System::Drawing::SystemColors::Window;
-			this->comboBox_img5->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
-			this->comboBox_img5->FormattingEnabled = true;
-			this->comboBox_img5->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"a", L"b", L"c"});
-			this->comboBox_img5->Location = System::Drawing::Point(331, 279);
-			this->comboBox_img5->Name = L"comboBox_img5";
-			this->comboBox_img5->Size = System::Drawing::Size(320, 21);
-			this->comboBox_img5->TabIndex = 6;
-			// 
-			// comboBox_img6
-			// 
-			this->comboBox_img6->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
-				| System::Windows::Forms::AnchorStyles::Left) 
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->comboBox_img6->BackColor = System::Drawing::SystemColors::Window;
-			this->comboBox_img6->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
-			this->comboBox_img6->FormattingEnabled = true;
-			this->comboBox_img6->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"a", L"b", L"c"});
-			this->comboBox_img6->Location = System::Drawing::Point(658, 279);
-			this->comboBox_img6->Name = L"comboBox_img6";
-			this->comboBox_img6->Size = System::Drawing::Size(320, 21);
-			this->comboBox_img6->TabIndex = 6;
 			// 
 			// MyForm
 			// 
