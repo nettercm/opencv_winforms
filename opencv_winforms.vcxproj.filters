@@ -24,10 +24,10 @@
     <ClCompile Include="settings_dialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\decode\avio_reading.c">
+    <ClCompile Include="avio_reading.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\decode\ip.c">
+    <ClCompile Include="ip.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
