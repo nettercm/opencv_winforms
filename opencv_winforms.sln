@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_winforms", "opencv_winforms.vcxproj", "{33CC0BE6-96F2-45B7-A286-C51030C97FFB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_test", "..\win32_opencv_test_dll\opencv_test.vcxproj", "{8B1E8822-485E-490E-AA8B-FFD2BCCEA95B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "decode", "..\decode\decode.vcxproj", "{D30D74B3-82D1-4420-B1AF-4A55B795B668}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +17,14 @@ Global
 		{33CC0BE6-96F2-45B7-A286-C51030C97FFB}.Debug|Win32.Build.0 = Debug|Win32
 		{33CC0BE6-96F2-45B7-A286-C51030C97FFB}.Release|Win32.ActiveCfg = Release|Win32
 		{33CC0BE6-96F2-45B7-A286-C51030C97FFB}.Release|Win32.Build.0 = Release|Win32
+		{8B1E8822-485E-490E-AA8B-FFD2BCCEA95B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8B1E8822-485E-490E-AA8B-FFD2BCCEA95B}.Debug|Win32.Build.0 = Debug|Win32
+		{8B1E8822-485E-490E-AA8B-FFD2BCCEA95B}.Release|Win32.ActiveCfg = Release|Win32
+		{8B1E8822-485E-490E-AA8B-FFD2BCCEA95B}.Release|Win32.Build.0 = Release|Win32
+		{D30D74B3-82D1-4420-B1AF-4A55B795B668}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D30D74B3-82D1-4420-B1AF-4A55B795B668}.Debug|Win32.Build.0 = Debug|Win32
+		{D30D74B3-82D1-4420-B1AF-4A55B795B668}.Release|Win32.ActiveCfg = Release|Win32
+		{D30D74B3-82D1-4420-B1AF-4A55B795B668}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

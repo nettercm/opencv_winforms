@@ -15,9 +15,23 @@ ilmimf.lib;zlib.lib;libjasper.lib;libpng.lib;libtiff.lib;libjpeg.lib;opencv_phot
 using namespace std;
 using namespace cv;
 
+//default capture width and height
+int FRAME_WIDTH = 320; //640;
+int FRAME_HEIGHT = 240; //480;
+//max number of objects to be detected in frame
+int MAX_NUM_OBJECTS=50;
+//minimum and maximum object area
+int MIN_OBJECT_AREA = 20*20;
+int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH/1.5;
+
+uchar h_min=255,h_max=0,s_min=255,s_max=0,v_min=255,v_max=0;
+double canny_t1=50, canny_t2=50;
+
 VideoCapture capture;
-Mat img[10];
+Mat img[40];
+char *img_name[40];
 Mat img_temp;
+Mat img_previous1,img_previous2;
 double t;
 int skip=0, skipped=0;
 RNG rng(12345);
@@ -114,45 +128,112 @@ void contours(Mat& in, Mat& out, bool draw)
 	if(draw)
 	{
 		out.zeros( in.size(), CV_8UC3 );
-		for( int i = 0; i< contours.size(); i++ )
+		for( int i = 0; (i< contours.size()); i++ )
 		{
 			Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-			drawContours( out, contours, i, color, 2, 8, hierarchy, 0, Point() );
+			drawContours( out, contours, i, color, 1, 8, hierarchy, 0, Point() );
 		}
 	}
 }
 
-int cv_setup(void)
+
+string intToString(int number)
 {
-	int i;
+	std::stringstream ss;
+	ss << number;
+	return ss.str();
+}
 
-#ifdef WIN32
-	//capture.open("D:\\src\\win32_opencv_test_dll\\Release\\file.h264");
-	capture.open("C:\\cygwin\\home\\Chris\\7.h264");
-#else
-	capture.open(0);
-	capture.set(CV_CAP_PROP_FRAME_WIDTH,320);
-	capture.set(CV_CAP_PROP_FRAME_HEIGHT,240);
 
-	printf("CV_CAP_PROP_FORMAT=%f\n",capture.get(CV_CAP_PROP_FORMAT));
-	//capture.set(CV_CAP_PROP_FPS,30);
-#endif
+void drawObject(int x, int y,Mat &frame)
+{
+	//use some of the openCV drawing functions to draw crosshairs
+	//on your tracked image!
 
-	capture.read(img[0]);
+	//UPDATE:JUNE 18TH, 2013
+	//added 'if' and 'else' statements to prevent
+	//memory errors from writing off the screen (ie. (-25,-25) is not within the window!)
 
-	cv_loop(); //run through it once to reach a more steady state
+	circle(frame,Point(x,y),20,Scalar(0,255,0),2);
+	if(y-25>0)
+		line(frame,Point(x,y),Point(x,y-25),Scalar(0,255,0),2);
+	else line(frame,Point(x,y),Point(x,0),Scalar(0,255,0),2);
+	if(y+25<320)
+		line(frame,Point(x,y),Point(x,y+25),Scalar(0,255,0),2);
+	else line(frame,Point(x,y),Point(x,320),Scalar(0,255,0),2);
+	if(x-25>0)
+		line(frame,Point(x,y),Point(x-25,y),Scalar(0,255,0),2);
+	else line(frame,Point(x,y),Point(0,y),Scalar(0,255,0),2);
+	if(x+25<320)
+		line(frame,Point(x,y),Point(x+25,y),Scalar(0,255,0),2);
+	else line(frame,Point(x,y),Point(320,y),Scalar(0,255,0),2);
 
-	for(i=0;i<1000;i++)  //now initialize the timing 
-	{
-		times[i].min=99999.0;
-		times[i].avg=0.0;
-		times[i].max=0.0;
+	putText(frame,intToString(x)+","+intToString(y),Point(x,y+30),1,1,Scalar(0,255,0),2);
+
+}
+
+void trackFilteredObject(int &x, int &y, Mat threshold_image, Mat &cameraFeed)
+{
+	Mat temp;
+	threshold_image.copyTo(temp);
+	//these two vectors needed for output of findContours
+	vector< vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+	//find contours of filtered image using openCV findContours function
+	findContours(temp,contours,hierarchy,CV_RETR_CCOMP,CV_CHAIN_APPROX_SIMPLE );
+	//use moments method to find our filtered object
+	double refArea = 0;
+	bool objectFound = false;
+	if (hierarchy.size() > 0) {
+		int numObjects = hierarchy.size();
+		//if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
+		if(numObjects<MAX_NUM_OBJECTS){
+			for (int index = 0; index >= 0; index = hierarchy[index][0]) {
+
+				Moments moment = moments((cv::Mat)contours[index]);
+				double area = moment.m00;
+
+				//if the area is less than 20 px by 20px then it is probably just noise
+				//if the area is the same as the 3/2 of the image size, probably just a bad filter
+				//we only want the object with the largest area so we safe a reference area each
+				//iteration and compare it to the area in the next iteration.
+				if(area>MIN_OBJECT_AREA && area<MAX_OBJECT_AREA && area>refArea){
+					x = moment.m10/area;
+					y = moment.m01/area;
+					objectFound = true;
+					refArea = area;
+				}else objectFound = false;
+
+
+			}
+			//let user know you found an object
+			if(objectFound ==true){
+				putText(cameraFeed,"Tracking Object",Point(0,50),2,1,Scalar(0,255,0),2);
+				//draw object location on screen
+				drawObject(x,y,cameraFeed);}
+
+		}else putText(cameraFeed,"TOO MUCH NOISE! ADJUST FILTER",Point(0,50),1,2,Scalar(0,0,255),2);
 	}
+}
 
-	for(i=0;i<320*240;i++)
+
+
+int cv_capture(void)
+{
+	if(skip<0)
 	{
-		rgb565_img[i] = rng.operator ushort();
+		img_previous1.copyTo(img[0]);
 	}
+	else
+	{
+		skipped=0;  	while(skipped<skip)	{ capture.read(img[0]); skipped++;	} //skip if so desired
+		T( capture.read(img[0]) ); //printf("img[0]: isContinuous()=%d channels()=%d  type()=%d  depth()=%d\n", img[0].isContinuous(), img[0].channels(), img[0].type(), img[0].depth()); //type=16
+		img_previous1.copyTo(img_previous2);
+		img[0].copyTo(img_previous1);
+	}
+	resize(img[0], img[0], Size(FRAME_WIDTH,FRAME_HEIGHT), 0.0, 0.0, INTER_AREA );
+	if(img[0].cols != img_previous2.cols) img[0].copyTo(img_previous2);
+	if(img[0].cols != img_previous1.cols) img[0].copyTo(img_previous1);
 
 	return 0;
 }
@@ -161,47 +242,41 @@ int cv_setup(void)
 
 int cv_loop(void)
 {
-	printf("\n");
-
-	skipped=0;  	while(skipped<skip)	{ capture.read(img[0]); skipped++;	} //skip if so desired
-
-	T( capture.read(img[0]) ); //printf("img[0]: isContinuous()=%d channels()=%d  type()=%d  depth()=%d\n", img[0].isContinuous(), img[0].channels(), img[0].type(), img[0].depth()); //type=16
-
-	if(img[0].cols>320) resize(img[0], img[0], Size(320,240), 0.0, 0.0, INTER_AREA );
-
 	T( cvtColor (img[0], img[1], COLOR_BGR2GRAY) );
-	T( cvtColor (img[0], img[5], COLOR_BGR2HSV) );
+
+	T( cvtColor (img[0], img[2], COLOR_BGR2HSV) );
 	T( cvtColor (img[0], img[3], COLOR_BGR2BGR565) ); //printf("img[3]: channels()=%d  type()=%d  depth()=%d  size=%d  step=%d\n", img[3].channels(), img[3].type(), img[3].depth(), img[3].size, img[3].step1()  ); //type=8
 	T( cvtColor (img[3], img[4], COLOR_BGR5652BGR) );
 
-	T( resize(img[0], img[8], Size(), 0.5, 0.5, INTER_NEAREST) );
-	T( resize(img[0], img[8], Size(), 0.5, 0.5, INTER_LINEAR ) );
-	T( resize(img[0], img[8], Size(), 0.5, 0.5, INTER_AREA ) );
-	T( resize(img[0], img[8], Size(), 0.5, 0.5, INTER_CUBIC ) );
+	T( resize(img[0], img[39], Size(), 0.5, 0.5, INTER_NEAREST) );
+	T( resize(img[0], img[39], Size(), 0.5, 0.5, INTER_LINEAR ) );
+	T( resize(img[0], img[39], Size(), 0.5, 0.5, INTER_AREA ) );
+	T( resize(img[0], img[39], Size(), 0.5, 0.5, INTER_CUBIC ) );
 
-	T( resize(img[1], img[9], Size(), 0.5, 0.5, INTER_NEAREST) );
-	T( resize(img[1], img[9], Size(), 0.5, 0.5, INTER_LINEAR ) );
-	T( resize(img[1], img[9], Size(), 0.5, 0.5, INTER_AREA ) );
-	T( resize(img[1], img[7], Size(), 0.5, 0.5, INTER_CUBIC ) );
-	T( resize(img[7], img[6], Size(), 2.0, 2.0, INTER_NEAREST) );
+	T( resize(img[1], img[39], Size(), 0.5, 0.5, INTER_NEAREST) );
+	T( resize(img[1], img[39], Size(), 0.5, 0.5, INTER_LINEAR ) );
+	T( resize(img[1], img[39], Size(), 0.5, 0.5, INTER_AREA ) );
 
-	T( medianBlur   (img[0], img[8], 3) );
+	T( resize(img[1], img[5], Size(), 0.5, 0.5, INTER_AREA ) );
+	T( resize(img[5], img[6], Size(), 2.0, 2.0, INTER_NEAREST) );
+
+	T( medianBlur   (img[0], img[7], 3) );
 	T( medianBlur   (img[0], img[8], 5) );
-	T( GaussianBlur (img[0], img[8], Size(9, 9), 2, 2) );
-	T( GaussianBlur (img[0], img[8], Size(5, 5), 2, 2) );
-	T( GaussianBlur (img[0], img[8], Size(3, 3), 2, 2) );
+	T( GaussianBlur (img[0], img[9], Size(9, 9), 2, 2) );
+	T( GaussianBlur (img[0], img[10], Size(5, 5), 2, 2) );
+	T( GaussianBlur (img[0], img[11], Size(3, 3), 2, 2) );
 
-	T( medianBlur   (img[1], img[9], 3) );
-	T( medianBlur   (img[1], img[9], 5) );
-	T( GaussianBlur (img[1], img[9], Size(9, 9), 2, 2) );
-	T( GaussianBlur (img[1], img[9], Size(5, 5), 2, 2) );
-	T( GaussianBlur (img[1], img[9], Size(3, 3), 2, 2) );
-	T( blur         (img[1], img[9], Size(3,3)) );
-	T( blur         (img[1], img[9], Size(5,5)) );
+	T( medianBlur   (img[1], img[12], 3) );
+	T( medianBlur   (img[1], img[13], 5) );
+	T( GaussianBlur (img[1], img[14], Size(9, 9), 2, 2) );
+	T( GaussianBlur (img[1], img[15], Size(5, 5), 2, 2) );
+	T( GaussianBlur (img[1], img[16], Size(3, 3), 2, 2) );
+	T( blur         (img[1], img[17], Size(3,3)) );
+	T( blur         (img[1], img[18], Size(5,5)) );
 
-	T( Canny     (img[1], img[2], 50, 50, 3, 0) );
-	T( Canny     (img[7], img[6], 50, 50, 3, 0) );
-	T( Laplacian (img[1], img[9], 0) );
+	T( Canny     (img[1], img[19], canny_t1, canny_t2, 3, 0) );
+	T( Canny     (img[5], img[20], canny_t1, canny_t2, 3, 0) );
+	T( Laplacian (img[1], img[21], 0) );
 
 #if 0
 	vector<Vec3f> circles;
@@ -228,41 +303,50 @@ int cv_loop(void)
     }
 #endif
 
-	T( inRange(img[5],Scalar(1,20,20),Scalar(128,255,255),img[9]) );
+	T( inRange(img[2],Scalar(h_min,s_min,v_min),Scalar(h_max,s_max,v_max),img[22]) );
 
 
-	T( img[0].copyTo(img[8]) );
-	T( img[2].copyTo(img[9]) );
-	T( contours(img[2], img[9], false) );
+	T( img[0].copyTo(img[39]) );
+	T( img[2].copyTo(img[39]) );
 
-	T( ScanImageAndReduceC(img[0]) );
+	T( ScanImageAndReduceC(img[39]) );
 
-	//Mat dilateElement = getStructuringElement( MORPH_RECT,Size(5,5));
-	//Mat erodeElement = getStructuringElement( MORPH_RECT,Size(3,3));
-	T( dilate (img[2], img[9], getStructuringElement( MORPH_RECT,Size(3,3))) );
-	T( dilate (img[2], img[9], getStructuringElement( MORPH_RECT,Size(5,5))) );
-	T( erode  (img[2], img[9],  getStructuringElement( MORPH_RECT,Size(3,3))) );
-	T( erode  (img[2], img[9],  getStructuringElement( MORPH_RECT,Size(5,5))) );
+	T( erode  (img[22], img[25],  getStructuringElement( MORPH_RECT,Size(3,3))) );
+	T( erode  (img[22], img[26],  getStructuringElement( MORPH_RECT,Size(5,5))) );
+	T( dilate (img[25], img[23], getStructuringElement( MORPH_RECT,Size(3,3))) );
+	T( dilate (img[26], img[24], getStructuringElement( MORPH_RECT,Size(5,5))) );
 
-	T( threshold         (img[1], img[9], 100, 255, 0) );
-	T( adaptiveThreshold (img[1], img[9], 128, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 3, 1) );
+	T( threshold         (img[1], img[27], 100, 255, 0) );
+	T( adaptiveThreshold (img[1], img[28], 128, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 3, 1) );
 
-	T( bitwise_xor (img[1], img[2], img[9],	noArray()) );
-
-
-	//resize(img[1],img[9],
-
-	//cvtColor(img[4],img[3],COLOR_BGR2HSV);
+	T( bitwise_xor (img[1], img[19], img[29],	noArray()) );
 
 	//printf("img[4]: channels()=%d  type()=%d  depth()=%d\n", img[4].channels(), img[4].type(), img[4].depth()); //type=0
 
 	//compare 24-bit RGB with 16-bit RGB
-	T( absdiff(img[4],img[0],img[8]) );  	
-	T( absdiff(img[1],img[2],img[9]) );  	
-	T( img[9] *= 32 ); //amplify the differences
-	T( img[8] = img[1] * 32 ); //amplify the differences
+	T( absdiff(img[4],img[0],img[30]) );  	
+	T( absdiff(img[1],img[6],img[31]) );  	
+	//T( img[30] *= 32 ); //amplify the differences
+	T( img[31] *= 16 ); //amplify the differences
+	T( img[30].convertTo(img[32],-1,16,0) );
+
+	//frame-differencing
+	absdiff(img[0],img_previous2,img[33]);
+	cvtColor (img_previous2,img[39], COLOR_BGR2GRAY);
+	absdiff(img[1],img[39],img[34]);
+
+
+	/*
+	Mat lookUpTable(1, 256, CV_8U);
+	uchar* p = lookUpTable.data;
+	for( int i = 0; i < 256; ++i) p[i] = (i*32 > 255 ? 255 : i*32);
+	LUT(img[30], lookUpTable, img[32]);
+	*/
 
 	T( rgb565_to_pseudo_hsv(rgb565_img,out1,out2) );
+
+	T( img[1].copyTo(img[39]) );
+	T( contours(img[39], img[33], false) );
 
 	//Sobel
 #if 0
@@ -281,10 +365,46 @@ int cv_loop(void)
 	addWeighted( abs_grad_x, 0.5, abs_grad_y, 0.5, 0, img_temp );
 #endif
 
-	//cvtColor(img_temp,img_output,COLOR_GRAY2BGR);
+	return 0;
+}
 
-	//imshow("test",img_input);
-	//waitKey(1);
+
+
+
+int cv_setup(void)
+{
+	int i;
+
+#ifdef WIN32
+	capture.open("D:\\src\\win32_opencv_test_dll\\Release\\file.h264");
+	//capture.open("C:\\cygwin\\home\\Chris\\7.h264");
+#else
+	capture.open(0);
+	capture.set(CV_CAP_PROP_FRAME_WIDTH,320);
+	capture.set(CV_CAP_PROP_FRAME_HEIGHT,240);
+
+	printf("CV_CAP_PROP_FORMAT=%f\n",capture.get(CV_CAP_PROP_FORMAT));
+	//capture.set(CV_CAP_PROP_FPS,30);
+#endif
+
+	capture.read(img[0]);
+	img[0].copyTo(img_previous1);
+	img[0].copyTo(img_previous2);
+
+	cv_loop(); //run through it once to reach a more steady state
+
+	for(i=0;i<1000;i++)  //now initialize the timing 
+	{
+		times[i].min=99999.0;
+		times[i].avg=0.0;
+		times[i].max=0.0;
+	}
+
+	for(i=0;i<320*240;i++)
+	{
+		rgb565_img[i] = rng.operator ushort();
+	}
+
 	return 0;
 }
 
