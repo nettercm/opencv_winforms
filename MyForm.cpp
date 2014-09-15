@@ -194,13 +194,16 @@ System::Void MyForm::timer1_Tick(System::Object^  sender, System::EventArgs^  e)
 		}
 		if(checkBox_Pause->Checked) skip = -1; else skip = System::Convert::ToInt32(comboBox2->Text);
 		cv_capture_from_stream();
-		cv_loop();
+		if(checkBox_process->Checked) cv_loop();
 		show_image(img[comboBox_img1->SelectedIndex],pictureBox1);
-		show_image(img[comboBox_img2->SelectedIndex],pictureBox2);
-		show_image(img[comboBox_img3->SelectedIndex],pictureBox3);
-		show_image(img[comboBox_img4->SelectedIndex],pictureBox4);
-		show_image(img[comboBox_img5->SelectedIndex],pictureBox5);
-		show_image(img[comboBox_img6->SelectedIndex],pictureBox6);
+		if(checkBox_process->Checked)
+		{
+			show_image(img[comboBox_img2->SelectedIndex],pictureBox2);
+			show_image(img[comboBox_img3->SelectedIndex],pictureBox3);
+			show_image(img[comboBox_img4->SelectedIndex],pictureBox4);
+			show_image(img[comboBox_img5->SelectedIndex],pictureBox5);
+			show_image(img[comboBox_img6->SelectedIndex],pictureBox6);
+		}
 		GC::Collect();
 	}
 }

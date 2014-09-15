@@ -100,6 +100,7 @@ namespace opencv_winforms {
 	private: System::Windows::Forms::ComboBox^  comboBox_img4;
 	private: System::Windows::Forms::ComboBox^  comboBox_img5;
 	private: System::Windows::Forms::ComboBox^  comboBox_img6;
+	private: System::Windows::Forms::CheckBox^  checkBox_process;
 
 
 
@@ -176,6 +177,7 @@ namespace opencv_winforms {
 			this->checkBox_Pause = (gcnew System::Windows::Forms::CheckBox());
 			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->comboBox_imgsize = (gcnew System::Windows::Forms::ComboBox());
+			this->checkBox_process = (gcnew System::Windows::Forms::CheckBox());
 			this->tableLayoutPanel1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->pictureBox2))->BeginInit();
@@ -388,11 +390,11 @@ namespace opencv_winforms {
 			// checkBox1
 			// 
 			this->checkBox1->AutoSize = true;
-			this->checkBox1->Location = System::Drawing::Point(6, 12);
+			this->checkBox1->Location = System::Drawing::Point(6, 4);
 			this->checkBox1->Name = L"checkBox1";
-			this->checkBox1->Size = System::Drawing::Size(59, 17);
+			this->checkBox1->Size = System::Drawing::Size(88, 17);
 			this->checkBox1->TabIndex = 1;
-			this->checkBox1->Text = L"Enable";
+			this->checkBox1->Text = L"Enable video";
 			this->checkBox1->UseVisualStyleBackColor = true;
 			// 
 			// lbl_fps
@@ -562,7 +564,7 @@ namespace opencv_winforms {
 			// checkBox_Pause
 			// 
 			this->checkBox_Pause->AutoSize = true;
-			this->checkBox_Pause->Location = System::Drawing::Point(6, 35);
+			this->checkBox_Pause->Location = System::Drawing::Point(6, 22);
 			this->checkBox_Pause->Name = L"checkBox_Pause";
 			this->checkBox_Pause->Size = System::Drawing::Size(56, 17);
 			this->checkBox_Pause->TabIndex = 1;
@@ -591,6 +593,16 @@ namespace opencv_winforms {
 			this->comboBox_imgsize->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::comboBox1_SelectedIndexChanged);
 			this->comboBox_imgsize->TextChanged += gcnew System::EventHandler(this, &MyForm::comboBox1_SelectedIndexChanged);
 			// 
+			// checkBox_process
+			// 
+			this->checkBox_process->AutoSize = true;
+			this->checkBox_process->Location = System::Drawing::Point(6, 41);
+			this->checkBox_process->Name = L"checkBox_process";
+			this->checkBox_process->Size = System::Drawing::Size(113, 17);
+			this->checkBox_process->TabIndex = 1;
+			this->checkBox_process->Text = L"Enable processing";
+			this->checkBox_process->UseVisualStyleBackColor = true;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -616,6 +628,7 @@ namespace opencv_winforms {
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->lbl_fps);
+			this->Controls->Add(this->checkBox_process);
 			this->Controls->Add(this->checkBox_Pause);
 			this->Controls->Add(this->checkBox1);
 			this->Controls->Add(this->tableLayoutPanel1);

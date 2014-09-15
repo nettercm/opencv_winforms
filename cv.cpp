@@ -409,7 +409,7 @@ int cv_setup(void)
 	int i;
 
 #ifdef WIN32
-	capture.open("D:\\src\\win32_opencv_test_dll\\Release\\file.h264");
+	capture.open("c:\\sdk\\opencv\\file.h264");
 	//capture.open("C:\\cygwin\\home\\Chris\\7.h264");
 #else
 	capture.open(0);

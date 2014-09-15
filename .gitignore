@@ -76,3 +76,4 @@ Debug/opencv_winforms.MyForm.resources
 *.log
 Debug/opencv_winforms.settings_dialog.resources
 Release/opencv_winforms.settings_dialog.resources
+Debug/opencv_winforms.unsuccessfulbuild
